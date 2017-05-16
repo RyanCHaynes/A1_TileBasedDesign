@@ -5,6 +5,9 @@ import java.awt.image.BufferStrategy;
 
 import dev.SummerStudy.secondEngine.display.Display;
 import dev.SummerStudy.secondEngine.gfx.Assets;
+import dev.SummerStudy.secondEngine.states.GameState;
+import dev.SummerStudy.secondEngine.states.MenuState;
+import dev.SummerStudy.secondEngine.states.State;
 
 public class Game implements Runnable{
 
@@ -16,6 +19,10 @@ public class Game implements Runnable{
 	private BufferStrategy bs;
 	private Graphics g;
 	
+	//States
+	private State gameState;
+	private State menuState;
+	
 	public Game(String title, int width, int height){
 		this.width = width;
 		this.height = height;
@@ -23,7 +30,8 @@ public class Game implements Runnable{
 	}
 	
 	private void tick(){
-		
+		if(State.getState() != null)
+			State.getState().tick();
 	}
 	private void render(){
 		bs = display.getCanvas().getBufferStrategy();
@@ -35,14 +43,20 @@ public class Game implements Runnable{
 		
 		g.clearRect(0, 0, width, height);
 		
-		g.drawImage(Assets.mage, 10, 10, null);
+		if(State.getState() != null)
+			State.getState().render(g);
 
 		bs.show();
 		g.dispose();
 	}
+	
 	private void init(){
 		display = new Display(title, width, height);
 		Assets.init();
+		
+		gameState = new GameState();
+		menuState = new MenuState();
+		State.setState(gameState);
 	}
 	
 	public void run(){
