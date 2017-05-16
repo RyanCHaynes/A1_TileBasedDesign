@@ -2,19 +2,23 @@ package dev.SummerStudy.secondEngine.entities;
 
 import java.awt.Graphics;
 
+import dev.SummerStudy.secondEngine.Game;
 import dev.SummerStudy.secondEngine.gfx.Assets;
 
 public class Player extends Creature{
-
-	public Player(float x, float y) {
+	private Game game;
+	public Player(Game game, float x, float y) {
 		super(x, y);
+		this.game = game;
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void tick() {
-		
-		
+		if(game.getKeyManager().up) y -=3;
+		if(game.getKeyManager().down) y +=3;
+		if(game.getKeyManager().left) x -=3;
+		if(game.getKeyManager().right) x +=3;
 	}
 
 	@Override

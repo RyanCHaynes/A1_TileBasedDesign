@@ -5,6 +5,7 @@ import java.awt.image.BufferStrategy;
 
 import dev.SummerStudy.secondEngine.display.Display;
 import dev.SummerStudy.secondEngine.gfx.Assets;
+import dev.SummerStudy.secondEngine.imput.KeyManager;
 import dev.SummerStudy.secondEngine.states.GameState;
 import dev.SummerStudy.secondEngine.states.MenuState;
 import dev.SummerStudy.secondEngine.states.State;
@@ -23,13 +24,18 @@ public class Game implements Runnable{
 	private State gameState;
 	private State menuState;
 	
+	//input
+	private KeyManager keyManager;
+	
 	public Game(String title, int width, int height){
 		this.width = width;
 		this.height = height;
 		this.title = title;
+		keyManager = new KeyManager();
 	}
 	
 	private void tick(){
+		keyManager.tick();
 		if(State.getState() != null)
 			State.getState().tick();
 	}
@@ -52,10 +58,11 @@ public class Game implements Runnable{
 	
 	private void init(){
 		display = new Display(title, width, height);
+		display.getFrame().addKeyListener(keyManager);
 		Assets.init();
 		
-		gameState = new GameState();
-		menuState = new MenuState();
+		gameState = new GameState(this);
+		menuState = new MenuState(this);
 		State.setState(gameState);
 	}
 	
@@ -92,6 +99,10 @@ public class Game implements Runnable{
 		running = true;
 		thread = new Thread(this);
 		thread.start();
+	}
+	
+	public KeyManager getKeyManager(){
+		return keyManager;
 	}
 	
 	public synchronized void stop(){
